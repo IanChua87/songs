@@ -25,10 +25,6 @@ public class SecondActivity extends AppCompatActivity {
     ArrayAdapter<Song> adapter;
 
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,14 +60,33 @@ public class SecondActivity extends AppCompatActivity {
                         adapter.clear();
                         adapter.addAll(songLv.get(i));
                         adapter.notifyDataSetChanged();
+                    } else{
+                        adapter.clear();
                     }
                 }
             }
         });
-
-
         adapter.clear();
         adapter.addAll(songLv);
         adapter.notifyDataSetChanged();
+    }
+    protected void onResume() {
+        super.onResume();
+
+        if (getIntent().getBooleanExtra("dataModified", false)) {
+            // Refresh the data in the ListView
+            loadSongData(); // Replace this with the actual method you use to load the data
+        }
+    }
+    private void loadSongData() {
+        // Retrieve the song data from the database or any other data source
+        DBHelper dbHelper = new DBHelper(SecondActivity.this);
+        ArrayList<Song> songList = dbHelper.getSongs();
+
+        // Create an ArrayAdapter or a custom adapter for the ListView
+        ArrayAdapter<Song> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songList);
+
+        // Set the adapter to the ListView
+        lvSong.setAdapter(adapter);
     }
 }

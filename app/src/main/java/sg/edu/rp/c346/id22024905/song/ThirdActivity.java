@@ -41,7 +41,6 @@ public class ThirdActivity extends AppCompatActivity {
         Intent i = getIntent();
         data = (Song) i.getSerializableExtra("data");
 
-
         etID.setText(String.valueOf(data.get_id()));
         etTitle.setText(data.getTitle());
         etSinger.setText(data.getSingers());
@@ -54,41 +53,49 @@ public class ThirdActivity extends AppCompatActivity {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DBHelper dbh = new DBHelper(ThirdActivity.this);
-
+                DBHelper db = new DBHelper(ThirdActivity.this);
                 data.setTitle(etTitle.getText().toString());
                 data.setSingers(etSinger.getText().toString());
                 data.setYear(Integer.parseInt(etYear.getText().toString()));
 
                 int selectedRadioButtonId = rgRating.getCheckedRadioButtonId();
 
-                int star;
+                int star = 0;
                 if (selectedRadioButtonId == R.id.rbtn1) {
-                    star = 1;
+                    star += 1;
                 } else if (selectedRadioButtonId == R.id.rbtn2) {
-                    star = 2;
+                    star += 2;
                 }  else if (selectedRadioButtonId == R.id.rbtn3) {
-                    star = 3;
+                    star += 3;
                 }  else if (selectedRadioButtonId == R.id.rbtn4) {
-                    star = 4;
+                    star += 4;
                 } else{
-                    star = 5;
+                    star += 5;
                 }
-
                 data.setStars(star);
 
+                db.updateSong(data);
 
-                dbh.updateSong(data);
-                dbh.close();
+                Intent intent = new Intent(ThirdActivity.this, SecondActivity.class);
+                intent.putExtra("dataModified", true);
+                startActivity(intent);
+
+                db.close();
                 finish();
+
+
             }
         });
 
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DBHelper dbh = new DBHelper(ThirdActivity.this);
-                dbh.deleteSong(data.get_id());
+                DBHelper db = new DBHelper(ThirdActivity.this);
+                db.deleteSong(data.get_id());
+
+                Intent intent = new Intent(ThirdActivity.this, SecondActivity.class);
+                intent.putExtra("dataModified", true);
+                startActivity(intent);
                 finish();
             }
         });
@@ -117,4 +124,5 @@ public class ThirdActivity extends AppCompatActivity {
                 return -1;
         }
     }
+
 }

@@ -67,21 +67,25 @@ public class DBHelper extends SQLiteOpenHelper {
     public int updateSong(Song data){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(COLUMN_ID, data.get_id());
         values.put(COLUMN_TITLE, data.getTitle());
         values.put(COLUMN_SINGER, data.getSingers());
         values.put(COLUMN_YEAR, data.getYear());
         values.put(COLUMN_STAR, data.getStars());
         String condition = COLUMN_ID + "= ?";
         String[] args = {String.valueOf(data.get_id())};
+
         int result = db.update(TABLE_TASK, values, condition, args);
+        Log.d("DBHelper", "Number of rows updated: " + result);
         if (result < 1) {
             Log.d("DBHelper", "Update failed");
         }
-        db.close();
+
         return result;
     }
 
     public int deleteSong(int id){
+
         SQLiteDatabase db = this.getWritableDatabase();
         String condition = COLUMN_ID + "= ?";
         String[] args = {String.valueOf(id)};
@@ -119,6 +123,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return songs;
     }
     public ArrayList<Song> getSongs() {
+
         ArrayList<Song> songsLv = new ArrayList<Song>();
         SQLiteDatabase db = this.getReadableDatabase();
         String[] columns = {COLUMN_ID, COLUMN_TITLE, COLUMN_SINGER, COLUMN_YEAR, COLUMN_STAR};
@@ -127,13 +132,13 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(0);
-                String title = cursor.getString(1); // Use index 1 for title
-                String singer = cursor.getString(2); // Use index 2 for singer
-                int year = cursor.getInt(3); // Use index 3 for year
-                int star = cursor.getInt(4); // Use index 4 for star
+                String title = cursor.getString(1);
+                String singer = cursor.getString(2);
+                int year = cursor.getInt(3);
+                int star = cursor.getInt(4);
                 Song obj = new Song(title, singer, year, star);
+                obj.set_id(id); // Set the _id field of the Song object
                 songsLv.add(obj);
-
             } while (cursor.moveToNext());
         }
         cursor.close();
