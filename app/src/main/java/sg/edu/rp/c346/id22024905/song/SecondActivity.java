@@ -4,25 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class SecondActivity extends AppCompatActivity {
-
     Button btnShow5Stars;
     ListView lvSong;
-    ArrayList<String> songTitles;
-    ArrayList<Song> songLv;
-//    ArrayList<String> items = new ArrayList();
-
-    ArrayAdapter<Song> adapter;
+    //    ArrayList<String> songTitles;
+    ArrayList<Song> items = new ArrayList<>();
+    //    ArrayList<String> items = new ArrayList();
+//    ArrayAdapter<Song> adapter;
+    CustomAdapter adapter;
 
 
     @Override
@@ -33,19 +30,19 @@ public class SecondActivity extends AppCompatActivity {
         btnShow5Stars = findViewById(R.id.buttomShow5Star);
         lvSong = findViewById(R.id.listViewSong);
 
-        songLv = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songLv);
+        DBHelper db = new DBHelper(SecondActivity.this);
+        items = db.getSongs();
+//        db.close();
+
+//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+        adapter = new CustomAdapter(this, R.layout.row, items);
         lvSong.setAdapter(adapter);
 
-        DBHelper db = new DBHelper(SecondActivity.this);
-//        songTitles = db.getSongContent();
-        songLv = db.getSongs();
-//        db.close();
 
         lvSong.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Song data = songLv.get(position);
+                Song data = items.get(position);
                 Intent intent = new Intent(SecondActivity.this, ThirdActivity.class);
                 intent.putExtra("data", data);
                 startActivity(intent);
@@ -55,21 +52,21 @@ public class SecondActivity extends AppCompatActivity {
         btnShow5Stars.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(int i = 0; i < songLv.size(); i++){
-                    if(songLv.get(i).getStars() == 5){
-                        adapter.clear();
-                        adapter.addAll(songLv.get(i));
-                        adapter.notifyDataSetChanged();
-                    } else{
-                        adapter.clear();
+                for (int i = 0; i < items.size(); i++) {
+                    if (items.get(i).getStars() == 5) {
+                        lvSong.setAdapter(adapter);
                     }
+//                    } else{
+//                        adapter.clear();
+//                    }
                 }
             }
         });
-        adapter.clear();
-        adapter.addAll(songLv);
-        adapter.notifyDataSetChanged();
+//        adapter.clear();
+//        adapter.addAll(items);
+//        adapter.notifyDataSetChanged();
     }
+
     protected void onResume() {
         super.onResume();
 
@@ -78,6 +75,7 @@ public class SecondActivity extends AppCompatActivity {
             loadSongData(); // Replace this with the actual method you use to load the data
         }
     }
+
     private void loadSongData() {
         // Retrieve the song data from the database or any other data source
         DBHelper dbHelper = new DBHelper(SecondActivity.this);

@@ -76,7 +76,7 @@ public class ThirdActivity extends AppCompatActivity {
 
                 db.updateSong(data);
 
-                Intent intent = new Intent(ThirdActivity.this, SecondActivity.class);
+                Intent intent = new Intent(ThirdActivity.this, CustomAdapter.class);
                 intent.putExtra("dataModified", true);
                 startActivity(intent);
 
@@ -93,7 +93,7 @@ public class ThirdActivity extends AppCompatActivity {
                 DBHelper db = new DBHelper(ThirdActivity.this);
                 db.deleteSong(data.get_id());
 
-                Intent intent = new Intent(ThirdActivity.this, SecondActivity.class);
+                Intent intent = new Intent(ThirdActivity.this, CustomAdapter.class);
                 intent.putExtra("dataModified", true);
                 startActivity(intent);
                 finish();
