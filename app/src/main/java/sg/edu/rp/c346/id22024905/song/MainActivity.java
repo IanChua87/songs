@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -57,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
                 String song = etSong.getText().toString();
                 String singer = etSinger.getText().toString();
+
+                if(song.isEmpty() || singer.isEmpty() || etYear.getText().toString().isEmpty()){
+                    Toast.makeText(MainActivity.this, "Song please insert song details", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 int year = Integer.parseInt(etYear.getText().toString());
                 int star;
                 int checkedRadioId = rgStars.getCheckedRadioButtonId();
@@ -73,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                     star = 5;
                 }
                 db.insertSong(song, singer, year, star);
+                Toast.makeText(MainActivity.this, "Song inserted successfully", Toast.LENGTH_LONG).show();
+
+
             }
         });
         btnShow.setOnClickListener(new View.OnClickListener() {
