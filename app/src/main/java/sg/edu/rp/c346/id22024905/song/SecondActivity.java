@@ -22,6 +22,9 @@ public class SecondActivity extends AppCompatActivity {
     CustomAdapter adapter;
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +55,14 @@ public class SecondActivity extends AppCompatActivity {
         btnShow5Stars.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ArrayList<Song> songsWith5Stars = new ArrayList<>();
                 for (int i = 0; i < items.size(); i++) {
                     if (items.get(i).getStars() == 5) {
-                        lvSong.setAdapter(adapter);
+                        songsWith5Stars.add(items.get(i));
                     }
+                    CustomAdapter filteredAdapter = new CustomAdapter(SecondActivity.this, R.layout.row, songsWith5Stars);
+
+                    lvSong.setAdapter(filteredAdapter);
 //                    } else{
 //                        adapter.clear();
 //                    }
@@ -69,7 +76,6 @@ public class SecondActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-
         if (getIntent().getBooleanExtra("dataModified", false)) {
             // Refresh the data in the ListView
             loadSongData(); // Replace this with the actual method you use to load the data
